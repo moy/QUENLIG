@@ -374,8 +374,12 @@ def add(**arg):
         del arg['function_name']
         # Search for function_name in the stack
         for f in inspect.stack():
-            if f.frame.f_code.co_name == function_name:
-                frame = f.frame
+            if isinstance(f, tuple):
+                candidate = f[0]  # depending on Python versions, it's a tuple or an object
+            else:
+                candidate = f.frame
+            if candidate.f_code.co_name == function_name:
+                frame = candidate
                 break
     else:
         function_name = 'add'
